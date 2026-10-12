@@ -1,0 +1,106 @@
+---
+const { current = "Penguins" } = Astro.props;
+---
+
+<div class="dataset-selector">
+  <label for="dataset">Explorer</label>
+
+  <div class="select-container">
+    <select id="dataset">
+      <option value="Penguins" selected={current === "Penguins"}>
+        Penguins
+      </option>
+
+      <option value="Cars" selected={current === "Cars"}>
+        Cars
+      </option>
+
+      <option value="Diamonds" selected={current === "Diamonds"}>
+        Diamonds
+      </option>
+    </select>
+
+    <span class="chevron" aria-hidden="true">↓</span>
+  </div>
+</div>
+
+<script>
+  document.querySelector("#dataset")?.addEventListener("change", (evt) => {
+    const value = (evt.target as HTMLSelectElement).value;
+
+    const paths: Record<string, string> = {
+      Penguins: "/",
+      Cars: "/cars/",
+      Diamonds: "/diamonds/",
+    };
+
+    if (paths[value]) {
+      document.documentElement.classList.add("page-changing");
+
+      setTimeout(() => {
+        location.pathname = paths[value];
+      }, 120);
+    }
+  });
+</script>
+
+<style>
+  .dataset-selector {
+    position: absolute;
+    top: 35px;
+    right: 45px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 5;
+  }
+
+  .dataset-selector label {
+    color: #888888;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .select-container {
+    position: relative;
+  }
+
+  select {
+    min-width: 125px;
+    appearance: none;
+    border: 1px solid #d5d5d5;
+    border-radius: 4px;
+    background: #ffffff;
+    padding: 9px 32px 9px 11px;
+    color: #171717;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  select:hover {
+    border-color: #999999;
+  }
+
+  select:focus-visible {
+    outline: 2px solid #111111;
+    outline-offset: 3px;
+  }
+
+  .chevron {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-52%);
+    color: #666666;
+    pointer-events: none;
+  }
+
+  @media (max-width: 800px) {
+    .dataset-selector {
+      position: static;
+      padding: 20px 25px 0;
+    }
+  }
+</style>

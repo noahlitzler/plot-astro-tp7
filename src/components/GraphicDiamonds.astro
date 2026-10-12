@@ -1,0 +1,86 @@
+---
+import * as Plot from "@observablehq/plot";
+import PlotFigure from "./PlotFigure.astro";
+import diamonds from "../data/diamonds.json";
+---
+
+<div class="graphs">
+  <PlotFigure
+    options={{
+      title: "Prix et carat",
+      subtitle: "Le prix augmente-t-il avec le poids du diamant ?",
+      caption: "Chaque point représente un diamant.",
+      ariaLabel: "Graphique représentant le prix des diamants selon leur carat.",
+      grid: true,
+      x: {
+        label: "Carat"
+      },
+      y: {
+        label: "Prix"
+      },
+      marks: [
+        Plot.dot(diamonds, {
+          x: "carat",
+          y: "price",
+          r: 4
+        })
+      ]
+    }}
+  />
+
+  <PlotFigure
+    options={{
+      title: "Prix selon la qualité",
+      subtitle: "Répartition du prix selon le niveau de taille",
+      caption: "Chaque point représente un diamant.",
+      ariaLabel: "Graphique représentant le prix des diamants selon leur qualité.",
+      grid: true,
+      x: {
+        label: "Qualité"
+      },
+      y: {
+        label: "Prix"
+      },
+      marks: [
+        Plot.dot(diamonds, {
+          x: "cut",
+          y: "price",
+          r: 4
+        })
+      ]
+    }}
+  />
+
+  <PlotFigure
+    options={{
+      title: "Répartition selon la couleur",
+      subtitle: "Nombre de diamants pour chaque catégorie de couleur",
+      caption: "Chaque barre représente le nombre de diamants.",
+      ariaLabel: "Graphique représentant le nombre de diamants selon leur couleur.",
+      grid: true,
+      x: {
+        label: "Couleur"
+      },
+      y: {
+        label: "Nombre de diamants"
+      },
+      marks: [
+        Plot.barY(
+          diamonds,
+          Plot.groupX(
+            { y: "count" },
+            { x: "color" }
+          )
+        )
+      ]
+    }}
+  />
+</div>
+
+<style>
+  .graphs {
+    display: flex;
+    flex-direction: column;
+    gap: 70px;
+  }
+</style>

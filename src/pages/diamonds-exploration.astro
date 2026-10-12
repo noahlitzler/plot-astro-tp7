@@ -1,0 +1,424 @@
+---
+import diamonds from "../data/diamonds.json";
+import Layout from "../layouts/Layout.astro";
+
+const cuts = [...new Set(diamonds.map((diamond) => diamond.cut))];
+const colors = [...new Set(diamonds.map((diamond) => diamond.color))];
+const clarities = [
+  ...new Set(diamonds.map((diamond) => diamond.clarity)),
+];
+---
+
+<Layout title="Diamonds" active="diamonds">
+  <main class="page">
+
+    <header class="page-header">
+      <div class="header-meta">
+        <span>03 · DATASET</span>
+        <span>{diamonds.length} ENTRÉES</span>
+      </div>
+
+      <div class="title-row">
+        <div>
+          <p class="category">MINÉRAUX · QUALITÉ</p>
+          <h1>Diamonds</h1>
+        </div>
+
+        <p class="description">
+          Explore les caractéristiques des diamants et observe
+          les relations entre qualité, taille et prix.
+        </p>
+      </div>
+    </header>
+
+
+    <section class="filters-section">
+
+      <div class="section-heading">
+        <span>01</span>
+        <h2>Filtres</h2>
+      </div>
+
+      <div class="filters">
+
+        <label>
+          <span>Coupe</span>
+
+          <select id="cut">
+            <option value="">Toutes les coupes</option>
+
+            {cuts.map((value) => (
+              <option value={value}>{value}</option>
+            ))}
+          </select>
+        </label>
+
+
+        <label>
+          <span>Couleur</span>
+
+          <select id="color">
+            <option value="">Toutes les couleurs</option>
+
+            {colors.map((value) => (
+              <option value={value}>{value}</option>
+            ))}
+          </select>
+        </label>
+
+
+        <label>
+          <span>Clarté</span>
+
+          <select id="clarity">
+            <option value="">Toutes les clartés</option>
+
+            {clarities.map((value) => (
+              <option value={value}>{value}</option>
+            ))}
+          </select>
+        </label>
+
+      </div>
+
+    </section>
+
+
+    <section class="visualisation">
+
+      <div class="visualisation-header">
+        <div>
+          <span class="section-number">02</span>
+          <h2>Visualisation</h2>
+        </div>
+
+        <p id="result-count">{diamonds.length} diamants</p>
+      </div>
+
+      <div id="plot"></div>
+
+    </section>
+
+  </main>
+</Layout>
+
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import diamonds from "../data/diamonds.json";
+
+  const selectCut =
+    document.querySelector("#cut") as HTMLSelectElement;
+
+  const selectColor =
+    document.querySelector("#color") as HTMLSelectElement;
+
+  const selectClarity =
+    document.querySelector("#clarity") as HTMLSelectElement;
+
+  const container =
+    document.querySelector("#plot") as HTMLDivElement;
+
+  const resultCount =
+    document.querySelector("#result-count") as HTMLParagraphElement;
+
+
+  function renderPlot() {
+
+    const cut = selectCut.value;
+    const color = selectColor.value;
+    const clarity = selectClarity.value;
+
+    const filteredDiamonds = diamonds.filter((diamond) => {
+      return (
+        (!cut || diamond.cut === cut) &&
+        (!color || diamond.color === color) &&
+        (!clarity || diamond.clarity === clarity)
+      );
+    });
+
+
+    container.innerHTML = "";
+
+
+    const plot = Plot.plot({
+      width: Math.min(container.clientWidth, 1000),
+      height: 560,
+
+      marginLeft: 70,
+      marginBottom: 55,
+
+      grid: true,
+
+      x: {
+        label: "Carat",
+      },
+
+      y: {
+        label: "Prix",
+      },
+
+      color: {
+        legend: true,
+      },
+
+      marks: [
+        Plot.dot(filteredDiamonds, {
+          x: "carat",
+          y: "price",
+          fill: "cut",
+          r: 4,
+          fillOpacity: 0.6,
+          tip: true,
+        }),
+      ],
+    });
+
+
+    container.append(plot);
+
+    resultCount.textContent =
+      `${filteredDiamonds.length} diamant${filteredDiamonds.length > 1 ? "s" : ""}`;
+  }
+
+
+  selectCut.addEventListener("change", renderPlot);
+  selectColor.addEventListener("change", renderPlot);
+  selectClarity.addEventListener("change", renderPlot);
+
+  renderPlot();
+</script>
+
+
+<style>
+
+  .page {
+    margin-left: 228px;
+    padding: 0 55px 100px;
+    box-sizing: border-box;
+  }
+
+
+  .page-header {
+    padding: 45px 10px 70px;
+    border-bottom: 1px solid #dedede;
+  }
+
+
+  .header-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #999;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+  }
+
+
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 60px;
+    margin-top: 95px;
+  }
+
+
+  .category {
+    margin: 0 0 15px;
+    color: #888;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+  }
+
+
+  h1 {
+    margin: 0;
+    color: #111;
+    font-size: clamp(65px, 8vw, 115px);
+    font-weight: 700;
+    letter-spacing: -0.07em;
+    line-height: 0.85;
+  }
+
+
+  .description {
+    max-width: 360px;
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+
+  .filters-section,
+  .visualisation {
+    padding: 80px 10px 0;
+  }
+
+
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 30px;
+  }
+
+
+  .section-heading span,
+  .section-number {
+    color: #999;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+  }
+
+
+  .section-heading h2,
+  .visualisation-header h2 {
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: -0.035em;
+  }
+
+
+  .filters {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+
+  label > span {
+    color: #777;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+
+  select {
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    border: 1px solid #d8d8d8;
+    border-radius: 0;
+    background: #f5f5f3;
+    color: #111;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+  }
+
+
+  select:hover {
+    background: #eeeeec;
+  }
+
+
+  select:focus {
+    border-color: #111;
+  }
+
+
+  .visualisation {
+    padding-bottom: 50px;
+  }
+
+
+  .visualisation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 35px;
+  }
+
+
+  .visualisation-header > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+
+  .visualisation-header p {
+    margin: 0;
+    color: #777;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+
+  #plot {
+    width: 100%;
+    min-height: 560px;
+    padding: 35px;
+    box-sizing: border-box;
+    background: #f5f5f3;
+    overflow-x: auto;
+  }
+
+
+  @media (max-width: 900px) {
+
+    .page {
+      margin-left: 0;
+      padding: 0 30px 70px;
+    }
+
+    .title-row {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 30px;
+      margin-top: 70px;
+    }
+
+    .filters {
+      grid-template-columns: 1fr;
+    }
+
+  }
+
+
+  @media (max-width: 600px) {
+
+    .page {
+      padding: 0 20px 60px;
+    }
+
+    .page-header,
+    .filters-section,
+    .visualisation {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    h1 {
+      font-size: 64px;
+    }
+
+    .visualisation-header {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    #plot {
+      padding: 15px;
+    }
+
+  }
+
+</style>

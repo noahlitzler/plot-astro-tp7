@@ -1,0 +1,33 @@
+---
+import * as Plot from "@observablehq/plot";
+import PlotFigure from "./PlotFigure.astro";
+import penguins from "../data/penguins.json";
+
+const { species } = Astro.props;
+
+const penguinsSpecies = penguins.filter(
+  ({ species: penguinSpecies }) => penguinSpecies === species
+);
+---
+
+<PlotFigure
+  options={{
+    title: `Penguins ${species}`,
+    subtitle: "Masse du corps selon la longueur des nageoires",
+    caption: `Chaque point représente un Penguin ${species}.`,
+    ariaLabel: `Graphique représentant la masse du corps des Penguins ${species} selon la longueur de leurs nageoires.`,
+    grid: true,
+    x: {
+      label: "Longueur des nageoires (mm)"
+    },
+    y: {
+      label: "Masse du corps (g)"
+    },
+    marks: [
+      Plot.dot(penguinsSpecies, {
+        x: "flipper_length_mm",
+        y: "body_mass_g"
+      })
+    ]
+  }}
+/>

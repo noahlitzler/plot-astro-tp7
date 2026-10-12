@@ -1,0 +1,431 @@
+﻿---
+import penguins from "../data/penguins.json";
+import Layout from "../layouts/Layout.astro";
+
+const species = [...new Set(penguins.map((penguin) => penguin.species))];
+const islands = [...new Set(penguins.map((penguin) => penguin.island))];
+const sexes = [
+  ...new Set(penguins.map((penguin) => penguin.sex).filter(Boolean)),
+];
+---
+
+<Layout title="Penguins" active="penguins">
+  <main class="page">
+
+    <header class="page-header">
+      <div class="header-meta">
+        <span>02 Â· DATASET</span>
+        <span>344 ENTRÃ‰ES</span>
+      </div>
+
+      <div class="title-row">
+        <div>
+          <p class="category">ANIMAUX Â· ANTARCTIQUE</p>
+          <h1>Penguins</h1>
+        </div>
+
+        <p class="description">
+          Explore les caractÃ©ristiques physiques des manchots
+          et compare leurs diffÃ©rentes espÃ¨ces.
+        </p>
+      </div>
+    </header>
+
+
+    <section class="filters-section">
+
+      <div class="section-heading">
+        <span>01</span>
+        <h2>Filtres</h2>
+      </div>
+
+      <div class="filters">
+
+        <label>
+          <span>EspÃ¨ce</span>
+
+          <select id="species">
+            <option value="">Toutes les espÃ¨ces</option>
+
+            {species.map((value) => (
+              <option value={value}>{value}</option>
+            ))}
+          </select>
+        </label>
+
+
+        <label>
+          <span>ÃŽle</span>
+
+          <select id="island">
+            <option value="">Toutes les Ã®les</option>
+
+            {islands.map((value) => (
+              <option value={value}>{value}</option>
+            ))}
+          </select>
+        </label>
+
+
+        <label>
+          <span>Sexe</span>
+
+          <select id="sex">
+            <option value="">Tous les sexes</option>
+
+            {sexes.map((value) => (
+              <option value={value}>{value}</option>
+            ))}
+          </select>
+        </label>
+
+      </div>
+
+    </section>
+
+
+    <section class="visualisation">
+
+      <div class="visualisation-header">
+        <div>
+          <span class="section-number">02</span>
+          <h2>Visualisation</h2>
+        </div>
+
+        <p id="result-count" aria-live="polite" aria-atomic="true">344 manchots</p>
+      </div>
+
+      <figure aria-label="Visualisation des caractéristiques des manchots">
+        <div id="plot"></div>
+        <figcaption>Chaque point représente un manchot. Les couleurs distinguent les espèces. Source : jeu de données Penguins.</figcaption>
+      </figure>
+
+    </section>
+
+  </main>
+</Layout>
+
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import penguins from "../data/penguins.json";
+
+  const selectSpecies =
+    document.querySelector("#species") as HTMLSelectElement;
+
+  const selectIsland =
+    document.querySelector("#island") as HTMLSelectElement;
+
+  const selectSex =
+    document.querySelector("#sex") as HTMLSelectElement;
+
+  const container =
+    document.querySelector("#plot") as HTMLDivElement;
+
+  const resultCount =
+    document.querySelector("#result-count") as HTMLParagraphElement;
+
+
+  function renderPlot() {
+
+    const species = selectSpecies.value;
+    const island = selectIsland.value;
+    const sex = selectSex.value;
+
+    const filteredPenguins = penguins.filter((penguin) => {
+      return (
+        (!species || penguin.species === species) &&
+        (!island || penguin.island === island) &&
+        (!sex || penguin.sex === sex)
+      );
+    });
+
+
+    container.innerHTML = "";
+
+
+    const plot = Plot.plot({
+      width: Math.min(container.clientWidth, 1000),
+      height: 560,
+
+      marginLeft: 65,
+      marginBottom: 55,
+
+      title: "Comparer les espèces de manchots",
+      subtitle: "Relation entre la longueur et la profondeur du culmen",
+      caption: "Chaque point représente un manchot.",
+      ariaLabel: "Nuage de points comparant la longueur et la profondeur du culmen des manchots.",
+      grid: true,
+
+      x: {
+        label: "Longueur du culmen (mm)",
+      },
+
+      y: {
+        label: "Profondeur du culmen (mm)",
+      },
+
+      color: {
+        legend: true,
+      },
+
+      marks: [
+        Plot.dot(filteredPenguins, {
+          x: "culmen_length_mm",
+          y: "culmen_depth_mm",
+          fill: "species",
+          r: 5,
+          fillOpacity: 0.7,
+          tip: true,
+        }),
+      ],
+    });
+
+
+    container.append(plot);
+
+    resultCount.textContent =
+      `${filteredPenguins.length} manchot${filteredPenguins.length > 1 ? "s" : ""}`;
+  }
+
+
+  selectSpecies.addEventListener("change", renderPlot);
+  selectIsland.addEventListener("change", renderPlot);
+  selectSex.addEventListener("change", renderPlot);
+
+  renderPlot();
+</script>
+
+
+<style>
+
+  .page {
+    margin-left: 228px;
+    padding: 0 55px 100px;
+    box-sizing: border-box;
+  }
+
+
+  .page-header {
+    padding: 45px 10px 70px;
+    border-bottom: 1px solid #dedede;
+  }
+
+
+  .header-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #999;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+  }
+
+
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 60px;
+    margin-top: 95px;
+  }
+
+
+  .category {
+    margin: 0 0 15px;
+    color: #888;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+  }
+
+
+  h1 {
+    margin: 0;
+    color: #111;
+    font-size: clamp(65px, 8vw, 115px);
+    font-weight: 700;
+    letter-spacing: -0.07em;
+    line-height: 0.85;
+  }
+
+
+  .description {
+    max-width: 360px;
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+
+  .filters-section,
+  .visualisation {
+    padding: 80px 10px 0;
+  }
+
+
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 30px;
+  }
+
+
+  .section-heading span,
+  .section-number {
+    color: #999;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+  }
+
+
+  .section-heading h2,
+  .visualisation-header h2 {
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: -0.035em;
+  }
+
+
+  .filters {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+
+  label > span {
+    color: #777;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+
+  select {
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    border: 1px solid #d8d8d8;
+    border-radius: 0;
+    background: #f5f5f3;
+    color: #111;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+  }
+
+
+  select:hover {
+    background: #eeeeec;
+  }
+
+
+  select:focus {
+    border-color: #111;
+  }
+
+
+  .visualisation {
+    padding-bottom: 50px;
+  }
+
+
+  .visualisation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 35px;
+  }
+
+
+  .visualisation-header > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+
+  .visualisation-header p {
+    margin: 0;
+    color: #777;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+
+  #plot {
+    width: 100%;
+    min-height: 560px;
+    padding: 35px;
+    box-sizing: border-box;
+    background: #f5f5f3;
+    overflow-x: auto;
+  }
+
+
+  @media (max-width: 900px) {
+
+    .page {
+      margin-left: 0;
+      padding: 0 30px 70px;
+    }
+
+    .title-row {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 30px;
+      margin-top: 70px;
+    }
+
+    .filters {
+      grid-template-columns: 1fr;
+    }
+
+  }
+
+
+  @media (max-width: 600px) {
+
+    .page {
+      padding: 0 20px 60px;
+    }
+
+    .page-header,
+    .filters-section,
+    .visualisation {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    h1 {
+      font-size: 64px;
+    }
+
+    .visualisation-header {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    #plot {
+      padding: 15px;
+    }
+
+  }
+
+</style>

@@ -1,17 +1,23 @@
 ---
 import "../styles/global.css";
+import SiteNav from "../components/SiteNav.astro";
+
+const { title = "Explorer", showNav = true, active = "" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+    <title>{title}</title>
   </head>
+
   <body>
+    {showNav && <SiteNav active={active} />}
+
     <slot />
   </body>
 </html>

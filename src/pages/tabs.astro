@@ -1,0 +1,169 @@
+---
+import SiteNav from "../components/SiteNav.astro";
+import DataSelect from "../components/DataSelect.astro";
+import GraphicSpecies from "../components/GraphicSpecies.astro";
+import { Tabs, TabsList, TabsTab, TabsPanel } from "accessible-astro-components";
+---
+
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Penguins — Onglets</title>
+  </head>
+
+  <body>
+    <SiteNav active="penguins" />
+
+    <main>
+      <DataSelect current="Penguins" />
+
+      <header class="hero">
+        <p class="eyebrow">Navigation alternative</p>
+
+        <h1>
+          Species<span>.</span>
+        </h1>
+
+        <p class="intro">
+          Une version par onglets de l'exploration des trois espèces de
+          Penguins.
+        </p>
+      </header>
+
+      <section class="content">
+        <Tabs>
+          <TabsList class="tabs-list">
+            <TabsTab
+              id="tab1"
+              controls="panel1"
+              selected
+              class="tab !px-5 !py-3 aria-selected:!bg-neutral-900 aria-selected:!text-white"
+            >
+              Adelie
+            </TabsTab>
+
+            <TabsTab
+              id="tab2"
+              controls="panel2"
+              class="tab !px-5 !py-3 aria-selected:!bg-neutral-900 aria-selected:!text-white"
+            >
+              Gentoo
+            </TabsTab>
+
+            <TabsTab
+              id="tab3"
+              controls="panel3"
+              class="tab !px-5 !py-3 aria-selected:!bg-neutral-900 aria-selected:!text-white"
+            >
+              Chinstrap
+            </TabsTab>
+          </TabsList>
+
+          <TabsPanel id="panel1" labelledby="tab1" selected>
+            <GraphicSpecies species="Adelie" />
+          </TabsPanel>
+
+          <TabsPanel id="panel2" labelledby="tab2">
+            <GraphicSpecies species="Gentoo" />
+          </TabsPanel>
+
+          <TabsPanel id="panel3" labelledby="tab3">
+            <GraphicSpecies species="Chinstrap" />
+          </TabsPanel>
+        </Tabs>
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  :global(body) {
+    margin: 0;
+    background: #fafafa;
+    color: #171717;
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
+  }
+
+  main {
+    margin-left: 230px;
+    min-height: 100vh;
+  }
+
+  .hero {
+    max-width: 850px;
+    padding: 120px 70px 55px;
+  }
+
+  .eyebrow {
+    margin: 0 0 25px;
+    color: #888888;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(60px, 9vw, 120px);
+    line-height: 0.9;
+    letter-spacing: -0.07em;
+  }
+
+  h1 span {
+    color: #9ca3af;
+  }
+
+  .intro {
+    max-width: 580px;
+    margin: 38px 0 0;
+    color: #666666;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .content {
+    padding: 0 70px 100px;
+  }
+
+  .tabs-list {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 45px;
+    border-bottom: 1px solid #dddddd;
+  }
+
+  .tab {
+    border: none;
+    background: transparent;
+    color: #777777;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+  }
+
+  .tab:hover {
+    color: #111111;
+  }
+
+  @media (max-width: 800px) {
+    main {
+      margin-left: 0;
+    }
+
+    .hero {
+      padding: 60px 25px 40px;
+    }
+
+    .content {
+      padding: 0 25px 70px;
+    }
+
+    .tabs-list {
+      overflow-x: auto;
+    }
+  }
+</style>

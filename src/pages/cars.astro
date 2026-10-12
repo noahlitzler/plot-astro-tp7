@@ -1,0 +1,141 @@
+---
+import SiteNav from "../components/SiteNav.astro";
+import DataSelect from "../components/DataSelect.astro";
+import GraphicCars from "../components/GraphicCars.astro";
+---
+
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Explorer · Cars</title>
+  </head>
+
+  <body>
+    <SiteNav active="cars" />
+
+    <main>
+      <DataSelect current="Cars" />
+
+      <header class="intro">
+        <p class="eyebrow">02 · Jeu de données</p>
+
+        <h1>
+          Cars<span>.</span>
+        </h1>
+
+        <p class="description">
+          Observer les relations entre le poids, la puissance, la cylindrée,
+          la consommation et l'accélération.
+        </p>
+      </header>
+
+      <section class="data-section">
+        <div class="section-heading">
+          <span>01</span>
+
+          <div>
+            <p>Exploration</p>
+            <h2>Les voitures</h2>
+          </div>
+        </div>
+
+        <GraphicCars />
+      </section>
+    </main>
+  </body>
+</html>
+
+<style>
+  :global(body) {
+    margin: 0;
+    background: #fafafa;
+    color: #171717;
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
+  }
+
+  main {
+    margin-left: 235px;
+    min-height: 100vh;
+  }
+
+  .intro {
+    max-width: 900px;
+    padding: 145px 80px 75px;
+  }
+
+  .eyebrow {
+    margin: 0 0 28px;
+    color: #888888;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(70px, 11vw, 145px);
+    line-height: 0.84;
+    font-weight: 700;
+    letter-spacing: -0.08em;
+  }
+
+  h1 span {
+    color: #f59e0b;
+  }
+
+  .description {
+    max-width: 600px;
+    margin-top: 42px;
+    color: #666666;
+    font-size: 19px;
+    line-height: 1.65;
+  }
+
+  .data-section {
+    padding: 0 80px 130px;
+  }
+
+  .section-heading {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 55px;
+  }
+
+  .section-heading > span {
+    padding-top: 5px;
+    color: #aaaaaa;
+    font-size: 11px;
+  }
+
+  .section-heading p {
+    margin: 0 0 7px;
+    color: #999999;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .section-heading h2 {
+    margin: 0;
+    font-size: 43px;
+    letter-spacing: -0.055em;
+  }
+
+  @media (max-width: 800px) {
+    main {
+      margin-left: 0;
+    }
+
+    .intro {
+      padding: 70px 25px 45px;
+    }
+
+    .data-section {
+      padding: 0 25px 80px;
+    }
+  }
+</style>

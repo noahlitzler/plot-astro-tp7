@@ -1,0 +1,166 @@
+---
+import SiteNav from "../../components/SiteNav.astro";
+import GraphicSpecies from "../../components/GraphicSpecies.astro";
+---
+
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Explorer · Gentoo</title>
+  </head>
+
+  <body>
+    <SiteNav active="penguins" />
+
+    <main>
+      <div class="species-select">
+        <label for="species">Espèce</label>
+
+        <select id="species">
+          <option value="Adelie">Adelie</option>
+          <option value="Chinstrap">Chinstrap</option>
+          <option value="Gentoo" selected>Gentoo</option>
+        </select>
+      </div>
+
+      <header class="intro">
+        <p class="eyebrow">02 · Espèce</p>
+
+        <h1>
+          Gentoo<span>.</span>
+        </h1>
+
+        <p class="latin">Pygoscelis papua</p>
+
+        <p class="description">
+          Analyse des données morphologiques des Penguins Gentoo.
+        </p>
+      </header>
+
+      <section class="graph">
+        <GraphicSpecies species="Gentoo" />
+      </section>
+    </main>
+
+    <script>
+      document.querySelector("#species")?.addEventListener("change", (evt) => {
+        const value = (evt.target as HTMLSelectElement).value;
+
+        location.pathname = "/species/" + value + "/";
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  :global(body) {
+    margin: 0;
+    background: #fafafa;
+    color: #171717;
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
+  }
+
+  main {
+    margin-left: 235px;
+    min-height: 100vh;
+  }
+
+  .species-select {
+    position: absolute;
+    top: 35px;
+    right: 45px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .species-select label {
+    color: #888888;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .species-select select {
+    min-width: 125px;
+    border: 1px solid #d5d5d5;
+    border-radius: 4px;
+    background: white;
+    padding: 9px 11px;
+    color: #171717;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .species-select select:focus-visible {
+    outline: 2px solid #111111;
+    outline-offset: 3px;
+  }
+
+  .intro {
+    max-width: 900px;
+    padding: 145px 80px 65px;
+  }
+
+  .eyebrow {
+    margin: 0 0 28px;
+    color: #888888;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(70px, 11vw, 145px);
+    line-height: 0.84;
+    letter-spacing: -0.08em;
+  }
+
+  h1 span {
+    color: #9ca3af;
+  }
+
+  .latin {
+    margin: 25px 0 0;
+    color: #999999;
+    font-size: 14px;
+    font-style: italic;
+  }
+
+  .description {
+    max-width: 580px;
+    margin-top: 25px;
+    color: #666666;
+    font-size: 19px;
+    line-height: 1.65;
+  }
+
+  .graph {
+    padding: 0 80px 120px;
+  }
+
+  @media (max-width: 800px) {
+    main {
+      margin-left: 0;
+    }
+
+    .species-select {
+      position: static;
+      padding: 20px 25px 0;
+    }
+
+    .intro {
+      padding: 70px 25px 45px;
+    }
+
+    .graph {
+      padding: 0 25px 80px;
+    }
+  }
+</style>

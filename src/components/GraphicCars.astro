@@ -1,0 +1,84 @@
+---
+import * as Plot from "@observablehq/plot";
+import PlotFigure from "./PlotFigure.astro";
+import cars from "../data/cars.json";
+---
+
+<div class="graphs">
+  <PlotFigure
+    options={{
+      title: "Consommation et poids",
+      subtitle: "Les voitures les plus lourdes consomment-elles davantage ?",
+      caption: "Chaque point représente une voiture.",
+      ariaLabel: "Graphique représentant la consommation des voitures selon leur poids.",
+      grid: true,
+      x: {
+        label: "Poids (lb)"
+      },
+      y: {
+        label: "Consommation (mpg)"
+      },
+      marks: [
+        Plot.dot(cars, {
+          x: "weight (lb)",
+          y: "economy (mpg)",
+          r: 4
+        })
+      ]
+    }}
+  />
+
+  <PlotFigure
+    options={{
+      title: "Puissance et cylindrée",
+      subtitle: "Relation entre la cylindrée et la puissance du moteur",
+      caption: "Chaque point représente une voiture.",
+      ariaLabel: "Graphique représentant la puissance selon la cylindrée.",
+      grid: true,
+      x: {
+        label: "Cylindrée (cc)"
+      },
+      y: {
+        label: "Puissance (hp)"
+      },
+      marks: [
+        Plot.dot(cars, {
+          x: "displacement (cc)",
+          y: "power (hp)",
+          r: 4
+        })
+      ]
+    }}
+  />
+
+  <PlotFigure
+    options={{
+      title: "Poids et accélération",
+      subtitle: "Temps nécessaire pour atteindre 60 miles par heure",
+      caption: "Un temps plus faible correspond à une accélération plus rapide.",
+      ariaLabel: "Graphique représentant le temps de 0 à 60 miles par heure selon le poids.",
+      grid: true,
+      x: {
+        label: "Poids (lb)"
+      },
+      y: {
+        label: "0 à 60 mph (secondes)"
+      },
+      marks: [
+        Plot.dot(cars, {
+          x: "weight (lb)",
+          y: "0-60 mph (s)",
+          r: 4
+        })
+      ]
+    }}
+  />
+</div>
+
+<style>
+  .graphs {
+    display: flex;
+    flex-direction: column;
+    gap: 70px;
+  }
+</style>

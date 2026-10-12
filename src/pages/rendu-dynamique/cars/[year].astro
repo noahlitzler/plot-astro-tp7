@@ -1,0 +1,293 @@
+---
+import cars from "../../../data/cars.json";
+import PlotFigure from "../../../components/PlotFigure.astro";
+import Layout from "../../../layouts/Layout.astro";
+import * as Plot from "@observablehq/plot";
+
+export const prerender = false;
+
+const { year } = Astro.params;
+
+const filteredCars = cars.filter(
+  (car) => car.year.toString() === year
+);
+
+const plotOptions = {
+  grid: true,
+  marks: [
+    Plot.dot(filteredCars, {
+      x: "weight (lb)",
+      y: "power (hp)",
+      fill: "cylinders",
+      r: 5,
+      fillOpacity: 0.7,
+    }),
+  ],
+  x: {
+    label: "Poids (lb)",
+  },
+  y: {
+    label: "Puissance (hp)",
+  },
+  title: `Voitures ${year}`,
+};
+---
+
+<Layout title={`Cars ${year}`} active="dynamique">
+  <main class="page">
+
+    <header class="page-header">
+
+      <a href="/rendu-dynamique/" class="back">
+        ← Retour aux routes dynamiques
+      </a>
+
+      <div class="header-meta">
+        <span>04 · ROUTE DYNAMIQUE</span>
+        <span>CARS</span>
+      </div>
+
+      <div class="title-row">
+
+        <div>
+          <p class="category">AUTOMOBILE · ANNÉE</p>
+
+          <h1>{year}</h1>
+        </div>
+
+        <p class="description">
+          Visualisation des voitures présentes dans le dataset
+          pour l'année {year}.
+        </p>
+
+      </div>
+
+    </header>
+
+
+    <section class="information">
+
+      <div>
+        <span class="number">01</span>
+        <h2>Données</h2>
+      </div>
+
+      <p>
+        {filteredCars.length}
+        voiture{filteredCars.length > 1 ? "s" : ""}
+        trouvée{filteredCars.length > 1 ? "s" : ""}
+        pour l'année {year}.
+      </p>
+
+    </section>
+
+
+    <section class="visualisation">
+
+      <div class="visualisation-header">
+
+        <div>
+          <span class="number">02</span>
+          <h2>Visualisation</h2>
+        </div>
+
+      </div>
+
+      <div class="chart">
+        <PlotFigure options={plotOptions} />
+      </div>
+
+    </section>
+
+  </main>
+</Layout>
+
+
+<style>
+
+  .page {
+    margin-left: 228px;
+    padding: 0 55px 100px;
+    box-sizing: border-box;
+  }
+
+
+  .page-header {
+    padding: 35px 10px 75px;
+    border-bottom: 1px solid #dedede;
+  }
+
+
+  .back {
+    display: inline-block;
+    margin-bottom: 45px;
+    color: #777;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+
+  .back:hover {
+    color: #111;
+  }
+
+
+  .header-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #999;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+  }
+
+
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 60px;
+    margin-top: 85px;
+  }
+
+
+  .category {
+    margin: 0 0 15px;
+    color: #888;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+  }
+
+
+  h1 {
+    margin: 0;
+    color: #111;
+    font-size: clamp(70px, 9vw, 125px);
+    font-weight: 700;
+    letter-spacing: -0.07em;
+    line-height: 0.85;
+  }
+
+
+  .description {
+    max-width: 360px;
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+
+  .information,
+  .visualisation {
+    padding: 75px 10px 0;
+  }
+
+
+  .information {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 40px;
+  }
+
+
+  .information > div,
+  .visualisation-header > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+
+  .number {
+    color: #999;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+  }
+
+
+  h2 {
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: -0.035em;
+  }
+
+
+  .information > p {
+    max-width: 350px;
+    margin: 0;
+    color: #777;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+
+  .visualisation {
+    padding-bottom: 50px;
+  }
+
+
+  .visualisation-header {
+    margin-bottom: 30px;
+  }
+
+
+  .chart {
+    width: 100%;
+    padding: 35px;
+    box-sizing: border-box;
+    background: #f5f5f3;
+    overflow-x: auto;
+  }
+
+
+  @media (max-width: 900px) {
+
+    .page {
+      margin-left: 0;
+      padding: 0 30px 70px;
+    }
+
+    .title-row {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .information {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+  }
+
+
+  @media (max-width: 600px) {
+
+    .page {
+      padding: 0 20px 60px;
+    }
+
+    .page-header,
+    .information,
+    .visualisation {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    h1 {
+      font-size: 70px;
+    }
+
+    .chart {
+      padding: 15px;
+    }
+
+  }
+
+</style>
